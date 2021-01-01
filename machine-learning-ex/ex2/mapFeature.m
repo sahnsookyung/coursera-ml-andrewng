@@ -14,6 +14,7 @@ degree = 6;
 out = ones(size(X1(:,1)));
 for i = 1:degree
     for j = 0:i
+        % index of end+1 appends matrix on rhs to the current matrix (lhs)
         out(:, end+1) = (X1.^(i-j)).*(X2.^j);
     end
 end

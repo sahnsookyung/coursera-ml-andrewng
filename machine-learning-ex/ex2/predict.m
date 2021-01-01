@@ -15,11 +15,10 @@ p = zeros(m, 1);
 %               You should set p to a vector of 0's and 1's
 %
 
+% X = M x N matrix
+% theta = N x 1 matrix
 
-
-
-
-
+p = round(sigmoid(X*theta));
 
 % =========================================================================
 
