@@ -30,12 +30,16 @@ X = [ones(m, 1) X];
 %       for each row.
 %       
 
+% X = m x (n+1); all_theta = k x (n+1)
+% X*all_theta' = m x k
+% From this we want the maximum value of each row, as well as the value's index.
+%   The index returned is the predicted y value. 
 
+% max(X*all_theta') = m x 1
 
-
-
-
-
+% Use of ~ throws away the values of maximum
+% p is assigned the values of the indices where h(x;theta) are maximised
+[~, p] = (max(X*all_theta', [], 2)); 
 % =========================================================================
 
 

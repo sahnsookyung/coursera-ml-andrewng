@@ -20,14 +20,14 @@ p = zeros(size(X, 1), 1);
 %       information see 'help max'. If your examples are in rows, then, you
 %       can use max(A, [], 2) to obtain the max for each row.
 %
-
-
-
-
-
-
-
-
+X = [ones(m, 1) X];
+% X = m x n+1
+% Theta1 = (sj) x ((sj) + 1), sj = 25, therefore Theta1 = 25 x n+1
+% Theta2 = 10 x 25+1, similarly
+tmp = sigmoid(X*Theta1'); % m x 25
+% Use function to add the vector of 1's and make predictions for final
+% layer
+p = predictOneVsAll(Theta2, tmp); 
 
 % =========================================================================
 
