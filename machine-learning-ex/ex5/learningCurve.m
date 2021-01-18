@@ -51,15 +51,18 @@ error_val   = zeros(m, 1);
 %       end
 %
 
-% ---------------------- Sample Solution ----------------------
-
-
-
-
-
-
-
-% -------------------------------------------------------------
+for i = 1:m
+   % Use regularization for training, lambda = lambda
+   theta = trainLinearReg(X(1:i,:), (y(1:i)), lambda) ;
+   
+   % Don't use regularization to see the cost, labmda = 0
+   % For the training set it's only fair to calculate the cost on what it
+   % has seen, the subset of the training set.
+   error_train(i) = linearRegCostFunction(X(1:i,:), (y(1:i)), theta, 0);
+   
+   % For validation set use the cost for the entire validation set
+   error_val(i) = linearRegCostFunction(Xval, yval, theta, 0);
+end
 
 % =========================================================================
 
