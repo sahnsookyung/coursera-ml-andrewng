@@ -62,23 +62,53 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+X = [ones(m,1) X];
+% y = (repmat(1:num_labels, m, 1) == y); % M x K
+% The below code has the same effect as above
+y=[1:num_labels] == y;
+
+% Forward propagation
+firstLayerOutput = sigmoid(X * Theta1'); % M x (s_j + 1), s_j=no. of nodes in layer j
+secondLayerOutput = sigmoid([ones(m, 1) firstLayerOutput] * Theta2'); % M x K
+J = (1/m)*sum(sum((-y.*log(secondLayerOutput) - (1-y).*log(1-secondLayerOutput))));
+% Applying regularization term to Cost function J
+J = J + (lambda/(2*m))*( sum(sum((Theta1(:, 2:end).^2))) + sum(sum((Theta2(:, 2: end).^2))) );
+
+% Backpropagation
+
+for t = 1:m
+   a1 = X(t, :); % 1 x (N+1), this is the input layer nodes containing the training example
+   % X has the +1 term from 'ones' matrix already
+   z2 = a1 * Theta1'; % 1 x (N+1) * ((N+1) x s_(j+1))
+
+   a2 = [1 sigmoid(z2)]; % 1 x (s_(j+1))
 
 
+   z3 = a2 * Theta2'; % (1 x (s_j+1)) * ((s_j+1) x K)
+   a3 = sigmoid(z3); %  1 x K, K is no. of classifiers
+
+   % calculate delta terms for output layer
+   delta_3 = ( a3-y(t, :) ); % 1 x K
+   % ( (s_(j+1) x K) * (K x 1) ) .* (1 x s_(j+1))'
+   delta_2 = (Theta2' * delta_3').* sigmoidGradient([1 z2])'; 
+   % You can either add the 1 to match dimensions, or remove the 1st column
+   % of the first multiplicand since the bias term is discarded for the
+   % purpose of gradient updating. Since the first delta_2 value is
+   % discarded in the accumulation part we chose to match the dimensions
+   % for convenience in this case.
+   
+   % Accumulate gradient from this example
+   Theta1_grad = Theta1_grad + (delta_2(2:end) * a1) ; % we skip the bias term
+   Theta2_grad = Theta2_grad + delta_3' * a2;
+end
 
 
+Theta1_grad = (1/m) * Theta1_grad;
+Theta2_grad = (1/m) * Theta2_grad;
 
-
-
-
-
-
-
-
-
-
-
-
-
+% % Apply regularization
+Theta1_grad(:, 2:end) = Theta1_grad(:, 2:end) + lambda/m*Theta1(:, 2:end);
+Theta2_grad(:, 2:end) = Theta2_grad(:, 2:end) + lambda/m*Theta2(:, 2:end);
 
 % -------------------------------------------------------------
 
@@ -86,6 +116,5 @@ Theta2_grad = zeros(size(Theta2));
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
 
 end
